@@ -319,7 +319,7 @@ message GetConfigVersionResponse {
 
 #### 4.2.2 RESTful接口
 
-```
+```plaintext
 GET /config?namespace={namespace}&department={department}&application={application}&domain={domain}&environment={environment}&key={key}
 POST /config
 DELETE /config?namespace={namespace}&department={department}&application={application}&domain={domain}&environment={environment}&key={key}
@@ -342,7 +342,6 @@ GET /config/version?namespace={namespace}&department={department}&application={a
 
 ### 4.3 模块设计
 
-```
 config-center/
 ├── src/
 │   ├── main.rs               # 应用入口
@@ -385,7 +384,6 @@ config-center/
 │       └── mod.rs
 ├── Cargo.toml            # 项目依赖管理
 └── .env                  # 环境变量配置文件
-```
 
 **模块说明:**
 
@@ -631,4 +629,3 @@ graph LR
 * **操作审计设计：** 提供了操作审计的设计方案。
 * **数据备份与恢复设计：** 提供了数据备份与恢复的设计方案。
 * **数据同步设计：** 提供了配置中心数据同步的设计方案。
-
