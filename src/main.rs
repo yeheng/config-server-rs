@@ -4,7 +4,7 @@ mod db;
 mod cache;
 mod raft;
 mod auth;
-// mod monitor;
+mod monitor;
 mod audit;
 mod types;
 mod utils;
@@ -36,7 +36,7 @@ async fn main() -> Result<()> {
     info!("Configuration loaded successfully");
 
     // Initialize database connection
-    let db = db::Database::new(&config.database).await?;
+    let db = db::DatabasePool::new(&config.database).await?;
     info!("Database connection established");
 
     // Initialize Redis cache
@@ -52,23 +52,41 @@ async fn main() -> Result<()> {
     info!("Authentication initialized");
 
     // Initialize monitoring
-    // let monitor = monitor::Monitor::new(&config.monitor)?;
-    // info!("Monitoring initialized");
+    let monitor = monitor::Monitor::new(&config.monitor)?;
+    info!("Monitoring initialized");
 
     // Initialize audit logging
     let audit = audit::Audit::new(&config.audit).await?;
     info!("Audit logging initialized");
     // Start API server
     let api = api::rest::RestServer::new(
+        config.api.clone(),
+        Arc::new(db.clone()),
+        Arc::new(cache.clone()),
+        Arc::new(raft.clone()),
+        Arc::new(auth.clone()),
+        Arc::new(audit.clone()),
+    );
+
+    let grpc = api::grpc::GrpcServer::new(
         config.api,
         Arc::new(db),
         Arc::new(cache),
         Arc::new(raft),
         Arc::new(auth),
-        // monitor,
         Arc::new(audit),
     );
+
+    // Start gRPC server in a separate task
+    let grpc_handle = tokio::spawn(async move {
+        grpc.start().await
+    });
+
+    // Start REST server in the main thread
     api.start().await?;
+
+    // Wait for gRPC server to complete
+    grpc_handle.await??;
 
     Ok(())
 }

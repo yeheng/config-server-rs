@@ -3,7 +3,7 @@ use tonic::{transport::Server, Request, Response, Status};
 use std::sync::Arc;
 use crate::{
     config::ApiConfig,
-    db::Database,
+    db::DatabasePool,
     cache::RedisCache,
     raft::RaftNode,
     auth::Auth,
@@ -38,7 +38,7 @@ use config_service::{
 #[derive(Clone)]
 pub struct GrpcServer {
     config: ApiConfig,
-    db: Arc<Database>,
+    db: Arc<DatabasePool>,
     cache: Arc<RedisCache>,
     raft: Arc<RaftNode>,
     auth: Arc<Auth>,
@@ -48,7 +48,7 @@ pub struct GrpcServer {
 impl GrpcServer {
     pub fn new(
         config: ApiConfig,
-        db: Arc<Database>,
+        db: Arc<DatabasePool>,
         cache: Arc<RedisCache>,
         raft: Arc<RaftNode>,
         auth: Arc<Auth>,
@@ -524,7 +524,7 @@ mod tests {
             tls: None,
         };
 
-        let db = Arc::new(Database::new(&crate::config::DatabaseConfig {
+        let db = Arc::new(DatabasePool::new(&crate::config::DatabaseConfig {
             host: "localhost".to_string(),
             port: 5432,
             username: "postgres".to_string(),

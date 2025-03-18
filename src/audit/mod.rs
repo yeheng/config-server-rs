@@ -3,6 +3,8 @@ use chrono::{DateTime, Utc};
 use serde::{Serialize, Deserialize};
 use tokio::fs::{File, OpenOptions};
 use tokio::io::{AsyncWriteExt, BufWriter};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 use crate::config::AuditConfig;
 
@@ -15,10 +17,11 @@ pub struct AuditEvent {
     pub details: serde_json::Value,
     pub ip_address: String,
 }
-#[derive(Debug)]
+
+#[derive(Debug, Clone)]
 pub struct Audit {
     config: AuditConfig,
-    writer: BufWriter<File>,
+    writer: Arc<Mutex<BufWriter<File>>>,
 }
 
 impl Audit {
@@ -34,28 +37,30 @@ impl Audit {
             .await?;
         Ok(Self {
             config: config.clone(),
-            writer: BufWriter::new(log_file),
+            writer: Arc::new(Mutex::new(BufWriter::new(log_file))),
         })
     }
 
-    pub async fn log_event(&mut self, event: AuditEvent) -> Result<()> {
+    pub async fn log_event(&self, event: AuditEvent) -> Result<()> {
         let json = serde_json::to_string(&event)?;
-        self.writer.write_all(json.as_bytes()).await?;
-        self.writer.write_all(b"\n").await?;
-        self.writer.flush().await?;
+        let mut writer = self.writer.lock().await;
+        writer.write_all(json.as_bytes()).await?;
+        writer.write_all(b"\n").await?;
+        writer.flush().await?;
 
         // Rotate log file if size exceeds max_size
-        if self.writer.get_ref().metadata().await?.len() > self.config.max_size {
+        if writer.get_ref().metadata().await?.len() > self.config.max_size {
             self.rotate_log_file().await?;
         }
 
         Ok(())
     }
 
-    async fn rotate_log_file(&mut self) -> Result<()> {
+    async fn rotate_log_file(&self) -> Result<()> {
         // Close current file
-        self.writer.flush().await?;
-        let writer = std::mem::replace(&mut self.writer, 
+        let mut writer = self.writer.lock().await;
+        writer.flush().await?;
+        let writer = std::mem::replace(&mut *writer, 
             BufWriter::new(File::create("/dev/null").await?));
         drop(writer);
 
@@ -72,7 +77,8 @@ impl Audit {
             .open(self.config.log_dir.join("audit.log"))
             .await?;
 
-        self.writer = BufWriter::new(log_file);
+        let mut writer = self.writer.lock().await;
+        *writer = BufWriter::new(log_file);
 
         // Clean up old log files if count exceeds max_files
         self.cleanup_old_logs().await?;
@@ -181,7 +187,7 @@ mod tests {
             compression: false,
         };
 
-        let mut audit = Audit::new(&config).await.unwrap();
+        let audit = Audit::new(&config).await.unwrap();
 
         let event = AuditEvent {
             timestamp: Utc::now(),
@@ -205,7 +211,7 @@ mod tests {
             compression: false,
         };
 
-        let mut audit = Audit::new(&config).await.unwrap();
+        let audit = Audit::new(&config).await.unwrap();
 
         // Log some test events
         let events = vec![

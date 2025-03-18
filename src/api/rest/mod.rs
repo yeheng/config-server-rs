@@ -3,7 +3,7 @@ use crate::{
     auth::Auth,
     cache::RedisCache,
     config::ApiConfig,
-    db::Database,
+    db::DatabasePool,
     raft::RaftNode,
     types::{ConfigItem, ConfigNamespace, Permission, Role, User},
 };
@@ -15,7 +15,7 @@ use std::sync::Arc;
 
 pub struct RestServer {
     config: ApiConfig,
-    db: Arc<Database>,
+    db: Arc<DatabasePool>,
     cache: Arc<RedisCache>,
     raft: Arc<RaftNode>,
     auth: Arc<Auth>,
@@ -25,7 +25,7 @@ pub struct RestServer {
 impl RestServer {
     pub fn new(
         config: ApiConfig,
-        db: Arc<Database>,
+        db: Arc<DatabasePool>,
         cache: Arc<RedisCache>,
         raft: Arc<RaftNode>,
         auth: Arc<Auth>,
@@ -112,7 +112,7 @@ impl RestServer {
 
 // Configuration endpoints
 async fn create_config(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     cache: web::Data<Arc<RedisCache>>,
     raft: web::Data<Arc<RaftNode>>,
     auth: web::Data<Arc<Auth>>,
@@ -124,7 +124,7 @@ async fn create_config(
 }
 
 async fn get_config(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     cache: web::Data<Arc<RedisCache>>,
     key: web::Path<String>,
 ) -> impl Responder {
@@ -145,7 +145,7 @@ async fn get_config(
 }
 
 async fn update_config(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     cache: web::Data<Arc<RedisCache>>,
     raft: web::Data<Arc<RaftNode>>,
     auth: web::Data<Arc<Auth>>,
@@ -159,7 +159,7 @@ async fn update_config(
 }
 
 async fn delete_config(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     cache: web::Data<Arc<RedisCache>>,
     raft: web::Data<Arc<RaftNode>>,
     auth: web::Data<Arc<Auth>>,
@@ -172,7 +172,7 @@ async fn delete_config(
 }
 
 async fn list_configs(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     cache: web::Data<Arc<RedisCache>>,
     namespace: web::Path<String>,
 ) -> impl Responder {
@@ -182,7 +182,7 @@ async fn list_configs(
 
 // Namespace endpoints
 async fn create_namespace(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     raft: web::Data<Arc<RaftNode>>,
     auth: web::Data<Arc<Auth>>,
 
@@ -193,7 +193,7 @@ async fn create_namespace(
     HttpResponse::Created().json(namespace.0)
 }
 
-async fn get_namespace(db: web::Data<Arc<Database>>, name: web::Path<String>) -> impl Responder {
+async fn get_namespace(db: web::Data<Arc<DatabasePool>>, name: web::Path<String>) -> impl Responder {
     // TODO: Implement get_namespace
     HttpResponse::Ok().json(ConfigNamespace {
         id: uuid::Uuid::new_v4(),
@@ -207,7 +207,7 @@ async fn get_namespace(db: web::Data<Arc<Database>>, name: web::Path<String>) ->
 }
 
 async fn update_namespace(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     raft: web::Data<Arc<RaftNode>>,
     auth: web::Data<Arc<Auth>>,
 
@@ -220,7 +220,7 @@ async fn update_namespace(
 }
 
 async fn delete_namespace(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     raft: web::Data<Arc<RaftNode>>,
     auth: web::Data<Arc<Auth>>,
 
@@ -231,14 +231,14 @@ async fn delete_namespace(
     HttpResponse::NoContent()
 }
 
-async fn list_namespaces(db: web::Data<Arc<Database>>) -> impl Responder {
+async fn list_namespaces(db: web::Data<Arc<DatabasePool>>) -> impl Responder {
     // TODO: Implement list_namespaces
     HttpResponse::Ok().json(Vec::<ConfigNamespace>::new())
 }
 
 // User endpoints
 async fn create_user(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -248,7 +248,7 @@ async fn create_user(
     HttpResponse::Created().json(user.0)
 }
 
-async fn get_user(db: web::Data<Arc<Database>>, id: web::Path<uuid::Uuid>) -> impl Responder {
+async fn get_user(db: web::Data<Arc<DatabasePool>>, id: web::Path<uuid::Uuid>) -> impl Responder {
     // TODO: Implement get_user
     HttpResponse::Ok().json(User {
         id: id.into_inner(),
@@ -264,7 +264,7 @@ async fn get_user(db: web::Data<Arc<Database>>, id: web::Path<uuid::Uuid>) -> im
 }
 
 async fn update_user(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -276,7 +276,7 @@ async fn update_user(
 }
 
 async fn delete_user(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -286,14 +286,14 @@ async fn delete_user(
     HttpResponse::NoContent()
 }
 
-async fn list_users(db: web::Data<Arc<Database>>) -> impl Responder {
+async fn list_users(db: web::Data<Arc<DatabasePool>>) -> impl Responder {
     // TODO: Implement list_users
     HttpResponse::Ok().json(Vec::<User>::new())
 }
 
 // Role endpoints
 async fn create_role(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -303,7 +303,7 @@ async fn create_role(
     HttpResponse::Created().json(role.0)
 }
 
-async fn get_role(db: web::Data<Arc<Database>>, id: web::Path<uuid::Uuid>) -> impl Responder {
+async fn get_role(db: web::Data<Arc<DatabasePool>>, id: web::Path<uuid::Uuid>) -> impl Responder {
     // TODO: Implement get_role
     HttpResponse::Ok().json(Role {
         id: id.into_inner(),
@@ -316,7 +316,7 @@ async fn get_role(db: web::Data<Arc<Database>>, id: web::Path<uuid::Uuid>) -> im
 }
 
 async fn update_role(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -328,7 +328,7 @@ async fn update_role(
 }
 
 async fn delete_role(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -338,14 +338,14 @@ async fn delete_role(
     HttpResponse::NoContent()
 }
 
-async fn list_roles(db: web::Data<Arc<Database>>) -> impl Responder {
+async fn list_roles(db: web::Data<Arc<DatabasePool>>) -> impl Responder {
     // TODO: Implement list_roles
     HttpResponse::Ok().json(Vec::<Role>::new())
 }
 
 // Permission endpoints
 async fn create_permission(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -355,7 +355,7 @@ async fn create_permission(
     HttpResponse::Created().json(permission.0)
 }
 
-async fn get_permission(db: web::Data<Arc<Database>>, id: web::Path<uuid::Uuid>) -> impl Responder {
+async fn get_permission(db: web::Data<Arc<DatabasePool>>, id: web::Path<uuid::Uuid>) -> impl Responder {
     // TODO: Implement get_permission
     HttpResponse::Ok().json(Permission {
         id: id.into_inner(),
@@ -369,7 +369,7 @@ async fn get_permission(db: web::Data<Arc<Database>>, id: web::Path<uuid::Uuid>)
 }
 
 async fn update_permission(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -381,7 +381,7 @@ async fn update_permission(
 }
 
 async fn delete_permission(
-    db: web::Data<Arc<Database>>,
+    db: web::Data<Arc<DatabasePool>>,
     auth: web::Data<Arc<Auth>>,
 
     audit: web::Data<Arc<Audit>>,
@@ -391,7 +391,7 @@ async fn delete_permission(
     HttpResponse::NoContent()
 }
 
-async fn list_permissions(db: web::Data<Arc<Database>>) -> impl Responder {
+async fn list_permissions(db: web::Data<Arc<DatabasePool>>) -> impl Responder {
     // TODO: Implement list_permissions
     HttpResponse::Ok().json(Vec::<Permission>::new())
 }
@@ -411,7 +411,7 @@ mod tests {
         };
 
         let db = Arc::new(
-            Database::new(&crate::config::DatabaseConfig {
+            DatabasePool::new(&crate::config::DatabaseConfig {
                 host: "localhost".to_string(),
                 port: 5432,
                 username: "postgres".to_string(),
