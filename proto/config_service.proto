@@ -48,10 +48,12 @@ message Config {
   string value = 4;
   optional string description = 5;
   int64 version = 6;
-  string created_by = 7;
-  string updated_by = 8;
-  int64 created_at = 9;
-  int64 updated_at = 10;
+  repeated string tags = 7;
+  bool is_encrypted = 8;
+  string created_by = 9;
+  optional string updated_by = 10;
+  int64 created_at = 11;
+  optional int64 updated_at = 12;
 }
 
 message CreateConfigRequest {
@@ -103,9 +105,9 @@ message Namespace {
   string name = 2;
   optional string description = 3;
   string created_by = 4;
-  string updated_by = 5;
+  optional string updated_by = 5;
   int64 created_at = 6;
-  int64 updated_at = 7;
+  optional int64 updated_at = 7;
 }
 
 message CreateNamespaceRequest {
@@ -150,10 +152,13 @@ message User {
   string id = 1;
   string username = 2;
   string email = 3;
-  string created_by = 4;
-  string updated_by = 5;
-  int64 created_at = 6;
-  int64 updated_at = 7;
+  bool is_active = 4;
+  optional int64 last_login = 5;
+  repeated string roles = 6;
+  string created_by = 7;
+  optional string updated_by = 8;
+  int64 created_at = 9;
+  optional int64 updated_at = 10;
 }
 
 message CreateUserRequest {
@@ -202,9 +207,9 @@ message Role {
   optional string description = 3;
   repeated string permissions = 4;
   string created_by = 5;
-  string updated_by = 6;
+  optional string updated_by = 6;
   int64 created_at = 7;
-  int64 updated_at = 8;
+  optional int64 updated_at = 8;
 }
 
 message CreateRoleRequest {
@@ -251,10 +256,12 @@ message Permission {
   string id = 1;
   string name = 2;
   optional string description = 3;
-  string created_by = 4;
-  string updated_by = 5;
-  int64 created_at = 6;
-  int64 updated_at = 7;
+  string resource = 4;
+  string action = 5;
+  string created_by = 6;
+  optional string updated_by = 7;
+  int64 created_at = 8;
+  optional int64 updated_at = 9;
 }
 
 message CreatePermissionRequest {

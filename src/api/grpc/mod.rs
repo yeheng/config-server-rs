@@ -35,6 +35,7 @@ use config_service::{
     ConfigResponse, NamespaceResponse, UserResponse, RoleResponse, PermissionResponse,
 };
 
+#[derive(Clone)]
 pub struct GrpcServer {
     config: ApiConfig,
     db: Arc<Database>,
@@ -82,20 +83,23 @@ impl ConfigService for GrpcServer {
         request: Request<CreateConfigRequest>,
     ) -> Result<Response<ConfigResponse>, Status> {
         // TODO: Implement create_config
+        let req = request.into_inner();
+        let config = config_service::Config {
+            id: uuid::Uuid::new_v4().to_string(),
+            key: req.key,
+            namespace_id: req.namespace_id,
+            value: req.value,
+            version: 1,
+            created_at: chrono::Utc::now().timestamp(),
+            updated_at: None,
+            created_by: "test_user".to_string(),
+            updated_by: None,
+            description: None,
+            tags: vec![],
+            is_encrypted: false,
+        };
         Ok(Response::new(ConfigResponse {
-            config: Some(config_service::Config {
-                id: uuid::Uuid::new_v4().to_string(),
-                key: request.into_inner().key,
-                value: "test_value".to_string(),
-                version: 1,
-                created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
-                created_by: "test_user".to_string(),
-                updated_by: "test_user".to_string(),
-                description: None,
-                tags: vec![],
-                is_encrypted: false,
-            }),
+            config: Some(config),
         }))
     }
 
@@ -104,20 +108,24 @@ impl ConfigService for GrpcServer {
         request: Request<GetConfigRequest>,
     ) -> Result<Response<ConfigResponse>, Status> {
         // TODO: Implement get_config
+
+        let req = request.into_inner();
+        let config = config_service::Config {
+            id: uuid::Uuid::new_v4().to_string(),
+            key: req.key,
+            namespace_id: req.namespace_id,
+            value: "test_value".to_string(),
+            version: 1,
+            created_at: chrono::Utc::now().timestamp(),
+            updated_at: None,
+            created_by: "test_user".to_string(),
+            updated_by: None,
+            description: None,
+            tags: vec![],
+            is_encrypted: false,
+        };
         Ok(Response::new(ConfigResponse {
-            config: Some(config_service::Config {
-                id: uuid::Uuid::new_v4().to_string(),
-                key: request.into_inner().key,
-                value: "test_value".to_string(),
-                version: 1,
-                created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
-                created_by: "test_user".to_string(),
-                updated_by: "test_user".to_string(),
-                description: None,
-                tags: vec![],
-                is_encrypted: false,
-            }),
+            config: Some(config),
         }))
     }
 
@@ -126,20 +134,23 @@ impl ConfigService for GrpcServer {
         request: Request<UpdateConfigRequest>,
     ) -> Result<Response<ConfigResponse>, Status> {
         // TODO: Implement update_config
+        let req = request.into_inner();
+        let config = config_service::Config {
+            id: uuid::Uuid::new_v4().to_string(),
+            key: req.key,
+            namespace_id: req.namespace_id,
+            value: "updated_value".to_string(),
+            version: 2,
+            created_at: chrono::Utc::now().timestamp(),
+            updated_at: Some(chrono::Utc::now().timestamp()),
+            created_by: "test_user".to_string(),
+            updated_by: None,
+            description: None,
+            tags: vec![],
+            is_encrypted: false,
+        };
         Ok(Response::new(ConfigResponse {
-            config: Some(config_service::Config {
-                id: uuid::Uuid::new_v4().to_string(),
-                key: request.into_inner().key,
-                value: "test_value".to_string(),
-                version: 1,
-                created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
-                created_by: "test_user".to_string(),
-                updated_by: "test_user".to_string(),
-                description: None,
-                tags: vec![],
-                is_encrypted: false,
-            }),
+            config: Some(config),
         }))
     }
 
@@ -175,9 +186,9 @@ impl ConfigService for GrpcServer {
                 name: request.into_inner().name,
                 description: None,
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
                 created_by: "test_user".to_string(),
-                updated_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -189,13 +200,13 @@ impl ConfigService for GrpcServer {
         // TODO: Implement get_namespace
         Ok(Response::new(NamespaceResponse {
             namespace: Some(config_service::Namespace {
-                id: uuid::Uuid::new_v4().to_string(),
-                name: request.into_inner().name,
+                id: request.into_inner().id,
+                name: "test".to_string(),
                 description: None,
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
                 created_by: "test_user".to_string(),
-                updated_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -211,9 +222,9 @@ impl ConfigService for GrpcServer {
                 name: request.into_inner().name,
                 description: None,
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
                 created_by: "test_user".to_string(),
-                updated_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -223,7 +234,7 @@ impl ConfigService for GrpcServer {
         request: Request<DeleteNamespaceRequest>,
     ) -> Result<Response<DeleteNamespaceResponse>, Status> {
         // TODO: Implement delete_namespace
-        Ok(Response::new(DeleteNamespaceResponse {}))
+        Ok(Response::new(DeleteNamespaceResponse { success: true }))
     }
 
     async fn list_namespaces(
@@ -231,8 +242,31 @@ impl ConfigService for GrpcServer {
         request: Request<ListNamespacesRequest>,
     ) -> Result<Response<ListNamespacesResponse>, Status> {
         // TODO: Implement list_namespaces
+        let req = request.into_inner();
+
+        let namespaces = vec![
+            config_service::Namespace {
+                id: uuid::Uuid::new_v4().to_string(),
+                name: "namespace1".to_string(),
+                description: None,
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
+            },
+            config_service::Namespace {
+                id: uuid::Uuid::new_v4().to_string(),
+                name: "namespace2".to_string(),
+                description: None,
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
+            },
+        ];
         Ok(Response::new(ListNamespacesResponse {
-            namespaces: vec![],
+            namespaces: namespaces,
+            next_page_token: "".to_string(),
         }))
     }
 
@@ -248,9 +282,11 @@ impl ConfigService for GrpcServer {
                 email: "test@example.com".to_string(),
                 is_active: true,
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
                 last_login: None,
                 roles: vec![],
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -267,9 +303,11 @@ impl ConfigService for GrpcServer {
                 email: "test@example.com".to_string(),
                 is_active: true,
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
                 last_login: None,
                 roles: vec![],
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -286,9 +324,11 @@ impl ConfigService for GrpcServer {
                 email: "test@example.com".to_string(),
                 is_active: true,
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
                 last_login: None,
                 roles: vec![],
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -298,7 +338,7 @@ impl ConfigService for GrpcServer {
         request: Request<DeleteUserRequest>,
     ) -> Result<Response<DeleteUserResponse>, Status> {
         // TODO: Implement delete_user
-        Ok(Response::new(DeleteUserResponse {}))
+        Ok(Response::new(DeleteUserResponse { success: true }))
     }
 
     async fn list_users(
@@ -308,6 +348,7 @@ impl ConfigService for GrpcServer {
         // TODO: Implement list_users
         Ok(Response::new(ListUsersResponse {
             users: vec![],
+            next_page_token: "".to_string(),
         }))
     }
 
@@ -323,7 +364,9 @@ impl ConfigService for GrpcServer {
                 description: None,
                 permissions: vec![],
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -335,12 +378,14 @@ impl ConfigService for GrpcServer {
         // TODO: Implement get_role
         Ok(Response::new(RoleResponse {
             role: Some(config_service::Role {
-                id: request.into_inner().id,
+                id: uuid::Uuid::new_v4().to_string(),
                 name: "test_role".to_string(),
                 description: None,
                 permissions: vec![],
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -357,7 +402,9 @@ impl ConfigService for GrpcServer {
                 description: None,
                 permissions: vec![],
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -367,7 +414,7 @@ impl ConfigService for GrpcServer {
         request: Request<DeleteRoleRequest>,
     ) -> Result<Response<DeleteRoleResponse>, Status> {
         // TODO: Implement delete_role
-        Ok(Response::new(DeleteRoleResponse {}))
+        Ok(Response::new(DeleteRoleResponse { success: true }))
     }
 
     async fn list_roles(
@@ -377,6 +424,7 @@ impl ConfigService for GrpcServer {
         // TODO: Implement list_roles
         Ok(Response::new(ListRolesResponse {
             roles: vec![],
+            next_page_token: "".to_string(),
         }))
     }
 
@@ -393,7 +441,9 @@ impl ConfigService for GrpcServer {
                 resource: "test_resource".to_string(),
                 action: "test_action".to_string(),
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -411,7 +461,9 @@ impl ConfigService for GrpcServer {
                 resource: "test_resource".to_string(),
                 action: "test_action".to_string(),
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -429,7 +481,9 @@ impl ConfigService for GrpcServer {
                 resource: "test_resource".to_string(),
                 action: "test_action".to_string(),
                 created_at: chrono::Utc::now().timestamp(),
-                updated_at: chrono::Utc::now().timestamp(),
+                updated_at: None,
+                created_by: "test_user".to_string(),
+                updated_by: None,
             }),
         }))
     }
@@ -439,7 +493,9 @@ impl ConfigService for GrpcServer {
         request: Request<DeletePermissionRequest>,
     ) -> Result<Response<DeletePermissionResponse>, Status> {
         // TODO: Implement delete_permission
-        Ok(Response::new(DeletePermissionResponse {}))
+        Ok(Response::new(DeletePermissionResponse {
+            success: true,
+        }))
     }
 
     async fn list_permissions(
@@ -449,6 +505,7 @@ impl ConfigService for GrpcServer {
         // TODO: Implement list_permissions
         Ok(Response::new(ListPermissionsResponse {
             permissions: vec![],
+            next_page_token: "".to_string(),
         }))
     }
 }
@@ -486,7 +543,7 @@ mod tests {
             connection_timeout: 5,
         }).await.unwrap());
 
-        let raft = Arc::new(RaftNode::new(&crate::config::RaftConfig {
+        let raft = Arc::new(RaftNode::new(crate::config::RaftConfig {
             node_id: "node1".to_string(),
             data_dir: std::path::PathBuf::from("/tmp/raft"),
             peers: vec!["node2".to_string(), "node3".to_string()],
@@ -499,12 +556,6 @@ mod tests {
             token_expiration: 3600,
             password_hash_cost: 10,
             rbac_model: std::path::PathBuf::from("config/rbac_model.conf"),
-        }).unwrap());
-
-        let monitor = Arc::new(Monitor::new(&crate::config::MonitorConfig {
-            metrics_port: 9090,
-            prometheus_path: "/metrics".to_string(),
-            alert_rules: std::path::PathBuf::from("config/alert_rules.yml"),
         }).unwrap());
 
         let audit = Arc::new(Audit::new(&crate::config::AuditConfig {
@@ -520,7 +571,6 @@ mod tests {
             cache,
             raft,
             auth,
-            monitor,
             audit,
         );
 
