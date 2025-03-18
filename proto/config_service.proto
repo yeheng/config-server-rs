@@ -46,18 +46,19 @@ message Config {
   string namespace_id = 2;
   string key = 3;
   string value = 4;
-  string description = 5;
+  optional string description = 5;
   int64 version = 6;
   string created_by = 7;
-  int64 created_at = 8;
-  int64 updated_at = 9;
+  string updated_by = 8;
+  int64 created_at = 9;
+  int64 updated_at = 10;
 }
 
 message CreateConfigRequest {
   string namespace_id = 1;
   string key = 2;
   string value = 3;
-  string description = 4;
+  optional string description = 4;
 }
 
 message GetConfigRequest {
@@ -69,7 +70,7 @@ message UpdateConfigRequest {
   string namespace_id = 1;
   string key = 2;
   string value = 3;
-  string description = 4;
+  optional string description = 4;
 }
 
 message DeleteConfigRequest {
@@ -100,15 +101,16 @@ message ConfigResponse {
 message Namespace {
   string id = 1;
   string name = 2;
-  string description = 3;
+  optional string description = 3;
   string created_by = 4;
-  int64 created_at = 5;
-  int64 updated_at = 6;
+  string updated_by = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
 }
 
 message CreateNamespaceRequest {
   string name = 1;
-  string description = 2;
+  optional string description = 2;
 }
 
 message GetNamespaceRequest {
@@ -118,7 +120,7 @@ message GetNamespaceRequest {
 message UpdateNamespaceRequest {
   string id = 1;
   string name = 2;
-  string description = 3;
+  optional string description = 3;
 }
 
 message DeleteNamespaceRequest {
@@ -149,8 +151,9 @@ message User {
   string username = 2;
   string email = 3;
   string created_by = 4;
-  int64 created_at = 5;
-  int64 updated_at = 6;
+  string updated_by = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
 }
 
 message CreateUserRequest {
@@ -196,16 +199,17 @@ message UserResponse {
 message Role {
   string id = 1;
   string name = 2;
-  string description = 3;
+  optional string description = 3;
   repeated string permissions = 4;
   string created_by = 5;
-  int64 created_at = 6;
-  int64 updated_at = 7;
+  string updated_by = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
 }
 
 message CreateRoleRequest {
   string name = 1;
-  string description = 2;
+  optional string description = 2;
   repeated string permissions = 3;
 }
 
@@ -216,7 +220,7 @@ message GetRoleRequest {
 message UpdateRoleRequest {
   string id = 1;
   string name = 2;
-  string description = 3;
+  optional string description = 3;
   repeated string permissions = 4;
 }
 
@@ -246,15 +250,16 @@ message RoleResponse {
 message Permission {
   string id = 1;
   string name = 2;
-  string description = 3;
+  optional string description = 3;
   string created_by = 4;
-  int64 created_at = 5;
-  int64 updated_at = 6;
+  string updated_by = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
 }
 
 message CreatePermissionRequest {
   string name = 1;
-  string description = 2;
+  optional string description = 2;
 }
 
 message GetPermissionRequest {
@@ -264,7 +269,7 @@ message GetPermissionRequest {
 message UpdatePermissionRequest {
   string id = 1;
   string name = 2;
-  string description = 3;
+  optional string description = 3;
 }
 
 message DeletePermissionRequest {

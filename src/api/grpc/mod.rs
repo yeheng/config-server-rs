@@ -7,9 +7,7 @@ use crate::{
     cache::RedisCache,
     raft::RaftNode,
     auth::Auth,
-    monitor::Monitor,
     audit::Audit,
-    types::*,
 };
 
 // Generated protobuf code
@@ -19,31 +17,22 @@ pub mod config_service {
 
 use config_service::{
     config_service_server::{ConfigService, ConfigServiceServer},
-    CreateConfigRequest, CreateConfigResponse,
-    GetConfigRequest, GetConfigResponse,
-    UpdateConfigRequest, UpdateConfigResponse,
+    CreateConfigRequest, GetConfigRequest, UpdateConfigRequest,
     DeleteConfigRequest, DeleteConfigResponse,
     ListConfigsRequest, ListConfigsResponse,
-    CreateNamespaceRequest, CreateNamespaceResponse,
-    GetNamespaceRequest, GetNamespaceResponse,
-    UpdateNamespaceRequest, UpdateNamespaceResponse,
+    CreateNamespaceRequest, GetNamespaceRequest, UpdateNamespaceRequest,
     DeleteNamespaceRequest, DeleteNamespaceResponse,
     ListNamespacesRequest, ListNamespacesResponse,
-    CreateUserRequest, CreateUserResponse,
-    GetUserRequest, GetUserResponse,
-    UpdateUserRequest, UpdateUserResponse,
+    CreateUserRequest, GetUserRequest, UpdateUserRequest,
     DeleteUserRequest, DeleteUserResponse,
     ListUsersRequest, ListUsersResponse,
-    CreateRoleRequest, CreateRoleResponse,
-    GetRoleRequest, GetRoleResponse,
-    UpdateRoleRequest, UpdateRoleResponse,
+    CreateRoleRequest, GetRoleRequest, UpdateRoleRequest,
     DeleteRoleRequest, DeleteRoleResponse,
     ListRolesRequest, ListRolesResponse,
-    CreatePermissionRequest, CreatePermissionResponse,
-    GetPermissionRequest, GetPermissionResponse,
-    UpdatePermissionRequest, UpdatePermissionResponse,
+    CreatePermissionRequest, GetPermissionRequest, UpdatePermissionRequest,
     DeletePermissionRequest, DeletePermissionResponse,
     ListPermissionsRequest, ListPermissionsResponse,
+    ConfigResponse, NamespaceResponse, UserResponse, RoleResponse, PermissionResponse,
 };
 
 pub struct GrpcServer {
@@ -52,7 +41,6 @@ pub struct GrpcServer {
     cache: Arc<RedisCache>,
     raft: Arc<RaftNode>,
     auth: Arc<Auth>,
-    monitor: Arc<Monitor>,
     audit: Arc<Audit>,
 }
 
@@ -63,7 +51,6 @@ impl GrpcServer {
         cache: Arc<RedisCache>,
         raft: Arc<RaftNode>,
         auth: Arc<Auth>,
-        monitor: Arc<Monitor>,
         audit: Arc<Audit>,
     ) -> Self {
         Self {
@@ -72,7 +59,6 @@ impl GrpcServer {
             cache,
             raft,
             auth,
-            monitor,
             audit,
         }
     }
@@ -94,16 +80,16 @@ impl ConfigService for GrpcServer {
     async fn create_config(
         &self,
         request: Request<CreateConfigRequest>,
-    ) -> Result<Response<CreateConfigResponse>, Status> {
+    ) -> Result<Response<ConfigResponse>, Status> {
         // TODO: Implement create_config
-        Ok(Response::new(CreateConfigResponse {
+        Ok(Response::new(ConfigResponse {
             config: Some(config_service::Config {
                 id: uuid::Uuid::new_v4().to_string(),
                 key: request.into_inner().key,
                 value: "test_value".to_string(),
                 version: 1,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 created_by: "test_user".to_string(),
                 updated_by: "test_user".to_string(),
                 description: None,
@@ -116,16 +102,16 @@ impl ConfigService for GrpcServer {
     async fn get_config(
         &self,
         request: Request<GetConfigRequest>,
-    ) -> Result<Response<GetConfigResponse>, Status> {
+    ) -> Result<Response<ConfigResponse>, Status> {
         // TODO: Implement get_config
-        Ok(Response::new(GetConfigResponse {
+        Ok(Response::new(ConfigResponse {
             config: Some(config_service::Config {
                 id: uuid::Uuid::new_v4().to_string(),
                 key: request.into_inner().key,
                 value: "test_value".to_string(),
                 version: 1,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 created_by: "test_user".to_string(),
                 updated_by: "test_user".to_string(),
                 description: None,
@@ -138,16 +124,16 @@ impl ConfigService for GrpcServer {
     async fn update_config(
         &self,
         request: Request<UpdateConfigRequest>,
-    ) -> Result<Response<UpdateConfigResponse>, Status> {
+    ) -> Result<Response<ConfigResponse>, Status> {
         // TODO: Implement update_config
-        Ok(Response::new(UpdateConfigResponse {
+        Ok(Response::new(ConfigResponse {
             config: Some(config_service::Config {
                 id: uuid::Uuid::new_v4().to_string(),
                 key: request.into_inner().key,
                 value: "test_value".to_string(),
                 version: 1,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 created_by: "test_user".to_string(),
                 updated_by: "test_user".to_string(),
                 description: None,
@@ -162,7 +148,9 @@ impl ConfigService for GrpcServer {
         request: Request<DeleteConfigRequest>,
     ) -> Result<Response<DeleteConfigResponse>, Status> {
         // TODO: Implement delete_config
-        Ok(Response::new(DeleteConfigResponse {}))
+        Ok(Response::new(DeleteConfigResponse {
+            success: true,
+        }))
     }
 
     async fn list_configs(
@@ -172,21 +160,22 @@ impl ConfigService for GrpcServer {
         // TODO: Implement list_configs
         Ok(Response::new(ListConfigsResponse {
             configs: vec![],
+            next_page_token: "".to_string(),
         }))
     }
 
     async fn create_namespace(
         &self,
         request: Request<CreateNamespaceRequest>,
-    ) -> Result<Response<CreateNamespaceResponse>, Status> {
+    ) -> Result<Response<NamespaceResponse>, Status> {
         // TODO: Implement create_namespace
-        Ok(Response::new(CreateNamespaceResponse {
+        Ok(Response::new(NamespaceResponse {
             namespace: Some(config_service::Namespace {
                 id: uuid::Uuid::new_v4().to_string(),
                 name: request.into_inner().name,
                 description: None,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 created_by: "test_user".to_string(),
                 updated_by: "test_user".to_string(),
             }),
@@ -196,15 +185,15 @@ impl ConfigService for GrpcServer {
     async fn get_namespace(
         &self,
         request: Request<GetNamespaceRequest>,
-    ) -> Result<Response<GetNamespaceResponse>, Status> {
+    ) -> Result<Response<NamespaceResponse>, Status> {
         // TODO: Implement get_namespace
-        Ok(Response::new(GetNamespaceResponse {
+        Ok(Response::new(NamespaceResponse {
             namespace: Some(config_service::Namespace {
                 id: uuid::Uuid::new_v4().to_string(),
                 name: request.into_inner().name,
                 description: None,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 created_by: "test_user".to_string(),
                 updated_by: "test_user".to_string(),
             }),
@@ -214,15 +203,15 @@ impl ConfigService for GrpcServer {
     async fn update_namespace(
         &self,
         request: Request<UpdateNamespaceRequest>,
-    ) -> Result<Response<UpdateNamespaceResponse>, Status> {
+    ) -> Result<Response<NamespaceResponse>, Status> {
         // TODO: Implement update_namespace
-        Ok(Response::new(UpdateNamespaceResponse {
+        Ok(Response::new(NamespaceResponse {
             namespace: Some(config_service::Namespace {
                 id: uuid::Uuid::new_v4().to_string(),
                 name: request.into_inner().name,
                 description: None,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 created_by: "test_user".to_string(),
                 updated_by: "test_user".to_string(),
             }),
@@ -250,16 +239,16 @@ impl ConfigService for GrpcServer {
     async fn create_user(
         &self,
         request: Request<CreateUserRequest>,
-    ) -> Result<Response<CreateUserResponse>, Status> {
+    ) -> Result<Response<UserResponse>, Status> {
         // TODO: Implement create_user
-        Ok(Response::new(CreateUserResponse {
+        Ok(Response::new(UserResponse {
             user: Some(config_service::User {
                 id: uuid::Uuid::new_v4().to_string(),
                 username: request.into_inner().username,
                 email: "test@example.com".to_string(),
                 is_active: true,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 last_login: None,
                 roles: vec![],
             }),
@@ -269,16 +258,16 @@ impl ConfigService for GrpcServer {
     async fn get_user(
         &self,
         request: Request<GetUserRequest>,
-    ) -> Result<Response<GetUserResponse>, Status> {
+    ) -> Result<Response<UserResponse>, Status> {
         // TODO: Implement get_user
-        Ok(Response::new(GetUserResponse {
+        Ok(Response::new(UserResponse {
             user: Some(config_service::User {
                 id: request.into_inner().id,
                 username: "test_user".to_string(),
                 email: "test@example.com".to_string(),
                 is_active: true,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 last_login: None,
                 roles: vec![],
             }),
@@ -288,16 +277,16 @@ impl ConfigService for GrpcServer {
     async fn update_user(
         &self,
         request: Request<UpdateUserRequest>,
-    ) -> Result<Response<UpdateUserResponse>, Status> {
+    ) -> Result<Response<UserResponse>, Status> {
         // TODO: Implement update_user
-        Ok(Response::new(UpdateUserResponse {
+        Ok(Response::new(UserResponse {
             user: Some(config_service::User {
                 id: request.into_inner().id,
                 username: "test_user".to_string(),
                 email: "test@example.com".to_string(),
                 is_active: true,
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
                 last_login: None,
                 roles: vec![],
             }),
@@ -325,16 +314,16 @@ impl ConfigService for GrpcServer {
     async fn create_role(
         &self,
         request: Request<CreateRoleRequest>,
-    ) -> Result<Response<CreateRoleResponse>, Status> {
+    ) -> Result<Response<RoleResponse>, Status> {
         // TODO: Implement create_role
-        Ok(Response::new(CreateRoleResponse {
+        Ok(Response::new(RoleResponse {
             role: Some(config_service::Role {
                 id: uuid::Uuid::new_v4().to_string(),
                 name: request.into_inner().name,
                 description: None,
                 permissions: vec![],
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
             }),
         }))
     }
@@ -342,16 +331,16 @@ impl ConfigService for GrpcServer {
     async fn get_role(
         &self,
         request: Request<GetRoleRequest>,
-    ) -> Result<Response<GetRoleResponse>, Status> {
+    ) -> Result<Response<RoleResponse>, Status> {
         // TODO: Implement get_role
-        Ok(Response::new(GetRoleResponse {
+        Ok(Response::new(RoleResponse {
             role: Some(config_service::Role {
                 id: request.into_inner().id,
                 name: "test_role".to_string(),
                 description: None,
                 permissions: vec![],
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
             }),
         }))
     }
@@ -359,16 +348,16 @@ impl ConfigService for GrpcServer {
     async fn update_role(
         &self,
         request: Request<UpdateRoleRequest>,
-    ) -> Result<Response<UpdateRoleResponse>, Status> {
+    ) -> Result<Response<RoleResponse>, Status> {
         // TODO: Implement update_role
-        Ok(Response::new(UpdateRoleResponse {
+        Ok(Response::new(RoleResponse {
             role: Some(config_service::Role {
                 id: request.into_inner().id,
                 name: "test_role".to_string(),
                 description: None,
                 permissions: vec![],
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
             }),
         }))
     }
@@ -394,17 +383,17 @@ impl ConfigService for GrpcServer {
     async fn create_permission(
         &self,
         request: Request<CreatePermissionRequest>,
-    ) -> Result<Response<CreatePermissionResponse>, Status> {
+    ) -> Result<Response<PermissionResponse>, Status> {
         // TODO: Implement create_permission
-        Ok(Response::new(CreatePermissionResponse {
+        Ok(Response::new(PermissionResponse {
             permission: Some(config_service::Permission {
                 id: uuid::Uuid::new_v4().to_string(),
                 name: request.into_inner().name,
                 description: None,
                 resource: "test_resource".to_string(),
                 action: "test_action".to_string(),
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
             }),
         }))
     }
@@ -412,17 +401,17 @@ impl ConfigService for GrpcServer {
     async fn get_permission(
         &self,
         request: Request<GetPermissionRequest>,
-    ) -> Result<Response<GetPermissionResponse>, Status> {
+    ) -> Result<Response<PermissionResponse>, Status> {
         // TODO: Implement get_permission
-        Ok(Response::new(GetPermissionResponse {
+        Ok(Response::new(PermissionResponse {
             permission: Some(config_service::Permission {
                 id: request.into_inner().id,
                 name: "test_permission".to_string(),
                 description: None,
                 resource: "test_resource".to_string(),
                 action: "test_action".to_string(),
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
             }),
         }))
     }
@@ -430,17 +419,17 @@ impl ConfigService for GrpcServer {
     async fn update_permission(
         &self,
         request: Request<UpdatePermissionRequest>,
-    ) -> Result<Response<UpdatePermissionResponse>, Status> {
+    ) -> Result<Response<PermissionResponse>, Status> {
         // TODO: Implement update_permission
-        Ok(Response::new(UpdatePermissionResponse {
+        Ok(Response::new(PermissionResponse {
             permission: Some(config_service::Permission {
                 id: request.into_inner().id,
                 name: "test_permission".to_string(),
                 description: None,
                 resource: "test_resource".to_string(),
                 action: "test_action".to_string(),
-                created_at: chrono::Utc::now().to_rfc3339(),
-                updated_at: chrono::Utc::now().to_rfc3339(),
+                created_at: chrono::Utc::now().timestamp(),
+                updated_at: chrono::Utc::now().timestamp(),
             }),
         }))
     }

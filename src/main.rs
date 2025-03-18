@@ -8,7 +8,6 @@ mod auth;
 mod audit;
 mod types;
 mod utils;
-mod proto;
 
 use std::sync::Arc;
 
