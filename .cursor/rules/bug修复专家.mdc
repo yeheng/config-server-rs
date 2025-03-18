@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: *.rs,*.java,*.ts,*.js
 alwaysApply: false
 ---
 ---
