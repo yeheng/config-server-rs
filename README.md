@@ -51,21 +51,21 @@
 
 ```mermaid
 graph LR
-    Client(客户端) -->|gRPC/REST| API Gateway(API网关)
-    API Gateway --> Auth(认证服务)
-    API Gateway -->|路由| ConfigService(配置服务)
+    Client(客户端) --> API_Gateway["gRPC/REST API网关"]
+    API_Gateway --> Auth(认证服务)
+    API_Gateway -->|路由| ConfigService(配置服务)
     ConfigService --> Cache(Redis缓存)
     ConfigService --> DB(PostgreSQL数据库)
     ConfigService --> RaftCluster(Raft集群)
     RaftCluster --> DB
     Monitor(监控服务) --> ConfigService
-    Admin(管理后台) --> API Gateway
+    Admin(管理后台) --> API_Gateway
     DataSync(数据同步服务) --> RaftCluster
     Backup(备份服务) --> DB
     Audit(审计服务) --> DB
 
     style Client fill:#f9f,stroke:#333,stroke-width:2px
-    style API Gateway fill:#ccf,stroke:#333,stroke-width:2px
+    style API_Gateway fill:#ccf,stroke:#333,stroke-width:2px
     style ConfigService fill:#ccf,stroke:#333,stroke-width:2px
     style Cache fill:#ffc,stroke:#333,stroke-width:2px
     style DB fill:#ddf,stroke:#333,stroke-width:2px
@@ -97,122 +97,122 @@ graph LR
 
 ```mermaid
 erDiagram
+    namespace ||--o{ config : "1:N"
+    department ||--o{ config : "1:N"
+    application ||--o{ config : "1:N"
+    domain ||--o{ config : "1:N"
+    environment ||--o{ config : "1:N"
+    config ||--o{ config_version : "1:N"
+    user ||--o{ user_role : "1:N"
+    role ||--o{ user_role : "1:N"
+    user ||--o{ audit_log : "1:N"
+
     namespace {
-        string id PK
-        string name
-        string description
-        datetime create_time
-        datetime update_time
+        varchar id PK "唯一标识"
+        varchar name "名称"
+        text description "描述"
+        timestamp create_time "创建时间"
+        timestamp update_time "更新时间"
     }
 
     department {
-        string id PK
-        string name
-        string description
-        datetime create_time
-        datetime update_time
+        varchar id PK
+        varchar name
+        text description
+        timestamp create_time
+        timestamp update_time
     }
 
     application {
-        string id PK
-        string name
-        string description
-        datetime create_time
-        datetime update_time
+        varchar id PK
+        varchar name
+        text description
+        timestamp create_time
+        timestamp update_time
     }
 
     domain {
-        string id PK
-        string name
-        string description
-        datetime create_time
-        datetime update_time
+        varchar id PK
+        varchar name
+        text description
+        timestamp create_time
+        timestamp update_time
     }
 
     environment {
-        string id PK
-        string name
-        string description
-        datetime create_time
-        datetime update_time
+        varchar id PK
+        varchar name
+        text description
+        timestamp create_time
+        timestamp update_time
     }
 
     config {
-        string id PK
-        string namespace_id FK
-        string department_id FK
-        string application_id FK
-        string domain_id FK
-        string environment_id FK
-        string key
-        string value
-        string format
-        bool is_encrypted
-        string description
-        datetime create_time
-        datetime update_time
+        varchar id PK
+        varchar namespace_id FK
+        varchar department_id FK
+        varchar application_id FK
+        varchar domain_id FK
+        varchar environment_id FK
+        varchar key "配置键"
+        text value "配置值"
+        varchar format "格式"
+        boolean is_encrypted "是否加密"
+        text description "描述"
+        timestamp create_time
+        timestamp update_time
     }
 
     config_version {
-        string id PK
-        string config_id FK
-        string value
-        string version
-        string description
-        datetime create_time
+        varchar id PK
+        varchar config_id FK
+        text value
+        varchar version
+        text description
+        timestamp create_time
     }
 
     role {
-        string id PK
-        string name
-        string description
-        datetime create_time
-        datetime update_time
+        varchar id PK
+        varchar name
+        text description
+        timestamp create_time
+        timestamp update_time
     }
 
     user {
-        string id PK
-        string username
-        string password
-        string email
-        datetime create_time
-        datetime update_time
+        varchar id PK
+        varchar username
+        varchar password
+        varchar email
+        timestamp create_time
+        timestamp update_time
     }
 
     user_role {
-        string user_id FK
-        string role_id FK
+        varchar user_id FK
+        varchar role_id FK
     }
 
     casbin_rule {
-        string id PK
-        string ptype
-        string v0
-        string v1
-        string v2
-        string v3
-        string v4
-        string v5
+        varchar id PK
+        varchar ptype
+        varchar v0
+        varchar v1
+        varchar v2
+        varchar v3
+        varchar v4
+        varchar v5
     }
 
     audit_log {
-        string id PK
-        string user_id FK
-        string operation
-        string resource
-        string detail
-        datetime create_time
+        varchar id PK
+        varchar user_id FK
+        varchar operation "操作类型"
+        varchar resource "资源"
+        text detail "详情"
+        timestamp create_time
     }
-
-    config ||--|| namespace : belongs to
-    config ||--|| department : belongs to
-    config ||--|| application : belongs to
-    config ||--|| domain : belongs to
-    config ||--|| environment : belongs to
-    config ||--|| config_version : has many
-    user_role ||--|| user : has
-    user_role ||--|| role : has
-    audit_log ||--|| user : performed by
 ```
 
 **表结构说明:**
@@ -342,6 +342,7 @@ GET /config/version?namespace={namespace}&department={department}&application={a
 
 ### 4.3 模块设计
 
+```plaintext
 config-center/
 ├── src/
 │   ├── main.rs               # 应用入口
@@ -384,6 +385,7 @@ config-center/
 │       └── mod.rs
 ├── Cargo.toml            # 项目依赖管理
 └── .env                  # 环境变量配置文件
+```
 
 **模块说明:**
 
