@@ -1,0 +1,290 @@
+syntax = "proto3";
+
+package config_service;
+
+// Configuration Service
+service ConfigService {
+  // Configuration operations
+  rpc CreateConfig(CreateConfigRequest) returns (ConfigResponse) {}
+  rpc GetConfig(GetConfigRequest) returns (ConfigResponse) {}
+  rpc UpdateConfig(UpdateConfigRequest) returns (ConfigResponse) {}
+  rpc DeleteConfig(DeleteConfigRequest) returns (DeleteConfigResponse) {}
+  rpc ListConfigs(ListConfigsRequest) returns (ListConfigsResponse) {}
+
+  // Namespace operations
+  rpc CreateNamespace(CreateNamespaceRequest) returns (NamespaceResponse) {}
+  rpc GetNamespace(GetNamespaceRequest) returns (NamespaceResponse) {}
+  rpc UpdateNamespace(UpdateNamespaceRequest) returns (NamespaceResponse) {}
+  rpc DeleteNamespace(DeleteNamespaceRequest) returns (DeleteNamespaceResponse) {}
+  rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse) {}
+
+  // User operations
+  rpc CreateUser(CreateUserRequest) returns (UserResponse) {}
+  rpc GetUser(GetUserRequest) returns (UserResponse) {}
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse) {}
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
+
+  // Role operations
+  rpc CreateRole(CreateRoleRequest) returns (RoleResponse) {}
+  rpc GetRole(GetRoleRequest) returns (RoleResponse) {}
+  rpc UpdateRole(UpdateRoleRequest) returns (RoleResponse) {}
+  rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {}
+  rpc ListRoles(ListRolesRequest) returns (ListRolesResponse) {}
+
+  // Permission operations
+  rpc CreatePermission(CreatePermissionRequest) returns (PermissionResponse) {}
+  rpc GetPermission(GetPermissionRequest) returns (PermissionResponse) {}
+  rpc UpdatePermission(UpdatePermissionRequest) returns (PermissionResponse) {}
+  rpc DeletePermission(DeletePermissionRequest) returns (DeletePermissionResponse) {}
+  rpc ListPermissions(ListPermissionsRequest) returns (ListPermissionsResponse) {}
+}
+
+// Configuration messages
+message Config {
+  string id = 1;
+  string namespace_id = 2;
+  string key = 3;
+  string value = 4;
+  string description = 5;
+  int64 version = 6;
+  string created_by = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
+}
+
+message CreateConfigRequest {
+  string namespace_id = 1;
+  string key = 2;
+  string value = 3;
+  string description = 4;
+}
+
+message GetConfigRequest {
+  string namespace_id = 1;
+  string key = 2;
+}
+
+message UpdateConfigRequest {
+  string namespace_id = 1;
+  string key = 2;
+  string value = 3;
+  string description = 4;
+}
+
+message DeleteConfigRequest {
+  string namespace_id = 1;
+  string key = 2;
+}
+
+message DeleteConfigResponse {
+  bool success = 1;
+}
+
+message ListConfigsRequest {
+  string namespace_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListConfigsResponse {
+  repeated Config configs = 1;
+  string next_page_token = 2;
+}
+
+message ConfigResponse {
+  Config config = 1;
+}
+
+// Namespace messages
+message Namespace {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string created_by = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message CreateNamespaceRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message GetNamespaceRequest {
+  string id = 1;
+}
+
+message UpdateNamespaceRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message DeleteNamespaceRequest {
+  string id = 1;
+}
+
+message DeleteNamespaceResponse {
+  bool success = 1;
+}
+
+message ListNamespacesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListNamespacesResponse {
+  repeated Namespace namespaces = 1;
+  string next_page_token = 2;
+}
+
+message NamespaceResponse {
+  Namespace namespace = 1;
+}
+
+// User messages
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string created_by = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string password = 4;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
+
+message ListUsersRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+  string next_page_token = 2;
+}
+
+message UserResponse {
+  User user = 1;
+}
+
+// Role messages
+message Role {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string permissions = 4;
+  string created_by = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
+}
+
+message CreateRoleRequest {
+  string name = 1;
+  string description = 2;
+  repeated string permissions = 3;
+}
+
+message GetRoleRequest {
+  string id = 1;
+}
+
+message UpdateRoleRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string permissions = 4;
+}
+
+message DeleteRoleRequest {
+  string id = 1;
+}
+
+message DeleteRoleResponse {
+  bool success = 1;
+}
+
+message ListRolesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListRolesResponse {
+  repeated Role roles = 1;
+  string next_page_token = 2;
+}
+
+message RoleResponse {
+  Role role = 1;
+}
+
+// Permission messages
+message Permission {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string created_by = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message CreatePermissionRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message GetPermissionRequest {
+  string id = 1;
+}
+
+message UpdatePermissionRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message DeletePermissionRequest {
+  string id = 1;
+}
+
+message DeletePermissionResponse {
+  bool success = 1;
+}
+
+message ListPermissionsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListPermissionsResponse {
+  repeated Permission permissions = 1;
+  string next_page_token = 2;
+}
+
+message PermissionResponse {
+  Permission permission = 1;
+} 
