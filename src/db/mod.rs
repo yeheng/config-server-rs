@@ -1,5 +1,5 @@
 use anyhow::Result;
-use sea_orm::{DatabaseConnection, Database};
+use sea_orm::DatabaseConnection;
 use crate::config::DatabaseConfig;
 
 #[derive(Debug, Clone)]

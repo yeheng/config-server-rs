@@ -1,10 +1,10 @@
 ---
 description: 
-globs: *.md
-alwaysApply: false
+globs: 
+alwaysApply: true
 ---
 ---
-description: 用于规范输出markdown内容
+description: Standardize markdown content output
 globs: 
 ---
 Format your response in markdown according to the following requirements:

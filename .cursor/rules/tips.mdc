@@ -1,0 +1,70 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# AI-Assisted Development Guidelines
+
+**1. Introduction:**
+
+* Emphasize the importance of structured approaches for AI-assisted development
+* Explain these guidelines aim to help developers efficiently utilize AI tools while minimizing token usage and reducing errors
+
+**2. Project Setup:**
+
+* Importance of creating a project map (`readme.md`)
+* `readme.md` should list all files/directories with single-line descriptions of component purposes
+* Documentation folder structure should include:
+  * `docs/design.md` (Design Overview)
+  * `docs/prd.md` (Product Requirements)
+  * `docs/app-flow.md` (Application Flow)
+  * `docs/backend-structure.md` (Backend Architecture)
+  * `docs/frontend-guidelines.md` (Frontend Standards)
+  * `docs/tech-stack.md` (Technology Stack)
+  * `docs/file-structure.md` (File Structure)
+
+**3. Claude as "Software Architect":**
+
+* How to set up dedicated Claude projects for prompt optimization
+* Claude knowledge base should contain:
+  * Complete file structure (`docs/fileNames.md`)
+  * Main feature requirements
+  * Component-specific requirements
+  * Cursor/bolt.new documentation
+
+**4. Structured Prompt Workflow:**
+
+* Two-step process with "System Prompt" and "Execution Prompt"
+* Usage patterns:
+  * Use system prompts to establish Claude context
+  * Use execution prompts for problem analysis and solution proposals
+* Example execution prompt: "Add email validation to login form. Reference `src/components/login.jsx` from `fileNames.md` and `Documentation/FRD/auth.md`. Suggest efficient modifications using `bolt.new`."
+
+**5. Cursor Prompt Techniques:**
+
+* **Error Fixing:**
+  * Prompt: "Analyze this error. Identify root cause and create step-by-step solution."
+* **New Features:**
+  * Prompt: "Review `@` documentation and create implementation plan. Explain changes before execution."
+* **Response Structure:**
+  * Example: "Header alignment complete. Now implement login button. Review @login-doc and explain approach"
+
+**6. Progress Tracking:**
+
+* `progress.md` usage: "After each completed step, document in `@progress.md`: implemented features, encountered errors, and resolutions."
+* `project-status.md` usage: "At session end, summarize work in `@project-status.md`. Review `@progress.md` and plan next session."
+
+**7. Cursor Agent Best Practices:**
+
+* Prevent over-execution with: "Review @(doc-name) to define scope. Create stepwise implementation plan using chain-of-thought logic."
+
+**8. `.bolt/ignore` Optimization:**
+
+* Explain context minimization needs
+* Guide for identifying excludable files/directories
+
+**9. Conclusion:**
+
+* Reiterate methodology's goals for developer efficiency
+
+## Communication must be conducted in Chinese throughout the process

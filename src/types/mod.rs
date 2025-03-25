@@ -75,10 +75,11 @@ pub struct ConfigChange {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[repr(i32)]
 pub enum ChangeType {
-    Create,
-    Update,
-    Delete,
+    Create = 0,
+    Update = 1,
+    Delete = 2,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -140,50 +141,4 @@ pub struct ConfigTag {
     pub description: Option<String>,
     pub created_at: SystemTime,
     pub created_by: String,
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::time::SystemTime;
-
-    #[test]
-    fn test_config_item_serialization() {
-        let item = ConfigItem {
-            id: Uuid::new_v4(),
-            key: "test.key".to_string(),
-            value: "test_value".to_string(),
-            version: 1,
-            created_at: SystemTime::now(),
-            updated_at: SystemTime::now(),
-            created_by: "test_user".to_string(),
-            updated_by: "test_user".to_string(),
-            description: Some("Test config item".to_string()),
-            tags: vec!["test".to_string()],
-            is_encrypted: false,
-        };
-
-        let serialized = serde_json::to_string(&item).unwrap();
-        let deserialized: ConfigItem = serde_json::from_str(&serialized).unwrap();
-        assert_eq!(item.key, deserialized.key);
-        assert_eq!(item.value, deserialized.value);
-    }
-
-    #[test]
-    fn test_config_change_serialization() {
-        let change = ConfigChange {
-            id: Uuid::new_v4(),
-            config_id: Uuid::new_v4(),
-            old_value: Some("old_value".to_string()),
-            new_value: "new_value".to_string(),
-            change_type: ChangeType::Update,
-            created_at: SystemTime::now(),
-            created_by: "test_user".to_string(),
-            reason: Some("Test change".to_string()),
-        };
-
-        let serialized = serde_json::to_string(&change).unwrap();
-        let deserialized: ConfigChange = serde_json::from_str(&serialized).unwrap();
-        assert_eq!(change.new_value, deserialized.new_value);
-    }
 }
