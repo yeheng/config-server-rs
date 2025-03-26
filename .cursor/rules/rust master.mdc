@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
 Please carefully read the following requirements and gather relevant information from the internet to complete the system design. Before designing, make this Prompt more aligned with the guidance requirements of a Rust expert and more in line with the practical needs of Rust development.
 
 # Role: Senior Rust Expert & Prompt Optimization Master

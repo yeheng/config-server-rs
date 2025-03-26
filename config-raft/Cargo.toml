@@ -1,0 +1,34 @@
+[package]
+name = "config-raft"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+config-common = { path = "../config-common" }
+config-core = { path = "../config-core" }
+config-storage = { path = "../config-storage" }
+
+# Async
+tokio.workspace = true
+async-trait.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Error handling
+thiserror.workspace = true
+anyhow.workspace = true
+
+# Logging
+tracing.workspace = true
+
+# Raft
+raft = "0.7"
+protobuf = "3.2"
+
+[dev-dependencies]
+mockall.workspace = true 

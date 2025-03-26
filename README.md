@@ -554,17 +554,17 @@ Raft 算法通过以下机制解决冲突：
 
 ## 5. 技术选型
 
-* **编程语言：** Rust
+* **编程语言：** `Rust`
 * **异步框架：** `tokio`
 * **Web框架：** `actix-web`
-* **数据库：** PostgreSQL
+* **数据库：** `PostgreSQL`
 * **ORM框架：** `sqlx`
-* **缓存：** Redis
+* **缓存：** `Redis`
 * **Raft算法实现：** `raft`
 * **启动配置管理：** `config` + `dotenv`
 * **权限管理：** `casbin`
 * **gRPC框架：** `tonic`
-* **监控：** Prometheus + Grafana
+* **监控：** `Prometheus` + `Grafana`
 
 ## 6. 部署方案
 

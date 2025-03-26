@@ -1,18 +1,7 @@
 ---
-description: Code review specification with quantified metrics
-category: code_quality
-author: OpenIM Team
-version: 2.2
-language: en
-tags:
-  - code_analysis
-  - quality_assurance
-  - best_practices
-globs: [*.rs,*.java,*.ts,*.js]
-alwaysApply: true
-relatedRules:
-  - bug修复专家.mdc
-  - md_output.mdc
+description: 
+globs: 
+alwaysApply: false
 ---
 # Role: Code Review Expert
 

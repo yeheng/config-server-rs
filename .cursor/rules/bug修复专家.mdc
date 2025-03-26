@@ -1,18 +1,7 @@
 ---
-description: Bug fixing workflow specification for AI agents
-category: code_quality
-author: OpenIM Team
-version: 3.0
-language: en
-tags:
-  - debugging
-  - error_handling
-  - code_maintenance
-globs: [*.rs,*.java,*.ts,*.js]
+description: 
+globs: 
 alwaysApply: false
-relatedRules:
-  - 代码审查.mdc
-  - md_output.mdc
 ---
 # Role: Bug Fixing Expert
 
