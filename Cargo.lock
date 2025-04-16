@@ -272,6 +272,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dcfed56ad506cb2c684a14971b8861fdc3baaaae314b9e5f9bb532cbe3ba7a4f"
 
 [[package]]
+name = "api"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "anyhow",
+ "async-trait",
+ "common",
+ "core",
+ "mockall",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.12",
+ "tokio",
+ "tonic",
+ "tracing",
+]
+
+[[package]]
 name = "arc-swap"
 version = "1.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -302,6 +320,41 @@ name = "atomic-waker"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
+
+[[package]]
+name = "audit"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "common",
+ "mockall",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "storage",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "auth"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "casbin",
+ "chrono",
+ "common",
+ "jsonwebtoken",
+ "mockall",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+]
 
 [[package]]
 name = "autocfg"
@@ -525,160 +578,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "common"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "mockall",
+ "prometheus",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
 name = "concurrent-queue"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ca0197aee26d1ae37445ee532fefce43251d24cc7c166799f4d46817f1d3973"
 dependencies = [
  "crossbeam-utils",
-]
-
-[[package]]
-name = "config-api"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "anyhow",
- "async-trait",
- "config-common",
- "config-core",
- "config-proto",
- "mockall",
- "prost",
- "serde",
- "serde_json",
- "thiserror 2.0.12",
- "tokio",
- "tonic",
- "tonic-build",
- "tracing",
-]
-
-[[package]]
-name = "config-audit"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "config-common",
- "config-storage",
- "mockall",
- "serde",
- "serde_json",
- "sqlx",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "config-auth"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "casbin",
- "chrono",
- "config-common",
- "jsonwebtoken",
- "mockall",
- "serde",
- "serde_json",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "config-common"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "mockall",
- "prometheus",
- "serde",
- "serde_json",
- "sqlx",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "config-core"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "config-common",
- "mockall",
- "serde",
- "serde_json",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "config-monitor"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "config-common",
- "mockall",
- "prometheus",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "config-proto"
-version = "0.1.0"
-dependencies = [
- "prost",
- "tonic",
- "tonic-build",
-]
-
-[[package]]
-name = "config-raft"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "config-common",
- "config-core",
- "config-storage",
- "mockall",
- "protobuf 3.7.2",
- "raft",
- "serde",
- "serde_json",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "config-storage"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "config-common",
- "config-core",
- "mockall",
- "redis",
- "serde",
- "serde_json",
- "sqlx",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
 ]
 
 [[package]]
@@ -716,6 +637,21 @@ dependencies = [
  "percent-encoding",
  "time",
  "version_check",
+]
+
+[[package]]
+name = "core"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "common",
+ "mockall",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -1810,6 +1746,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "monitor"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "common",
+ "mockall",
+ "prometheus",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "multimap"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2200,6 +2151,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "proto"
+version = "0.1.0"
+dependencies = [
+ "prost",
+ "tonic",
+ "tonic-build",
+]
+
+[[package]]
 name = "protobuf"
 version = "2.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2256,6 +2216,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1885c039570dc00dcb4ff087a89e185fd56bae234ddc7f056a945bf36467248d"
 dependencies = [
  "proc-macro2",
+]
+
+[[package]]
+name = "raft"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "common",
+ "core",
+ "mockall",
+ "protobuf 3.7.2",
+ "raft 0.7.0",
+ "serde",
+ "serde_json",
+ "storage",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -3042,6 +3021,24 @@ name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
+
+[[package]]
+name = "storage"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "common",
+ "core",
+ "mockall",
+ "redis",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+]
 
 [[package]]
 name = "stringprep"

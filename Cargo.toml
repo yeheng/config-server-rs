@@ -1,14 +1,14 @@
 [workspace]
 members = [
-    "config-common",
-    "config-core",
-    "config-raft",
-    "config-storage",
-    "config-api",
-    "config-auth",
-    "config-monitor",
-    "config-audit",
-    "config-proto",
+    "common",
+    "core",
+    "raft",
+    "storage",
+    "api",
+    "auth",
+    "monitor",
+    "audit",
+    "proto",
 ]
 resolver = "3"
 

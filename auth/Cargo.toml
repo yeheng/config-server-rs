@@ -1,0 +1,34 @@
+[package]
+name = "auth"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+common = { path = "../common" }
+
+# Async
+tokio.workspace = true
+async-trait.workspace = true
+
+# Auth
+casbin.workspace = true
+jsonwebtoken.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Error handling
+thiserror.workspace = true
+anyhow.workspace = true
+
+# Logging
+tracing.workspace = true
+
+chrono.workspace = true
+
+[dev-dependencies]
+mockall.workspace = true 

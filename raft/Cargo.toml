@@ -1,0 +1,34 @@
+[package]
+name = "raft"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Internal dependencies
+common = { path = "../common" }
+core = { path = "../core" }
+storage = { path = "../storage" }
+
+# Async
+tokio.workspace = true
+async-trait.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Error handling
+thiserror.workspace = true
+anyhow.workspace = true
+
+# Logging
+tracing.workspace = true
+
+# Raft
+raft = "0.7"
+protobuf = "3.2"
+
+[dev-dependencies]
+mockall.workspace = true 

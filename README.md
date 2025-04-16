@@ -343,7 +343,7 @@ GET /config/version?namespace={namespace}&department={department}&application={a
 ### 4.3 模块设计
 
 ```plaintext
-config-center/
+center/
 ├── src/
 │   ├── main.rs               # 应用入口
 │   ├── config.rs             # 启动配置加载和管理
