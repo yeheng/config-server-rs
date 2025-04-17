@@ -10,17 +10,11 @@ license.workspace = true
 common = { path = "../common" }
 core = { path = "../core" }
 
-# Async
-tokio.workspace = true
-async-trait.workspace = true
-
 # Web framework
 actix-web.workspace = true
-tonic.workspace = true
 
 # Serialization
 serde.workspace = true
-serde_json.workspace = true
 
 # Error handling
 thiserror.workspace = true
@@ -28,6 +22,3 @@ anyhow.workspace = true
 
 # Logging
 tracing.workspace = true
-
-[dev-dependencies]
-mockall.workspace = true

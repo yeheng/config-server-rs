@@ -1,3 +1,4 @@
+use actix_web::ResponseError;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -36,6 +37,29 @@ pub enum Error {
 
     #[error("Prometheus error: {0}")]
     PrometheusError(String),
+}
+
+impl ResponseError for Error {
+    fn status_code(&self) -> actix_web::http::StatusCode {
+        match self {
+            Error::Database(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Cache(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+            Error::Config(_) => actix_web::http::StatusCode::BAD_REQUEST,
+            Error::Auth(_) => actix_web::http::StatusCode::UNAUTHORIZED,
+            Error::Authorization(_) => actix_web::http::StatusCode::FORBIDDEN,
+            Error::Validation(_) => actix_web::http::StatusCode::BAD_REQUEST,
+            Error::NotFound(_) => actix_web::http::StatusCode::NOT_FOUND,
+            Error::AlreadyExists(_) => actix_web::http::StatusCode::CONFLICT,
+            Error::Internal(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+            Error::PrometheusError(_) => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+}
+
+impl From<serde_json::Error> for Error {
+    fn from(err: serde_json::Error) -> Self {
+        Error::Config(err.to_string())
+    }
 }
 
 impl From<prometheus::Error> for Error {

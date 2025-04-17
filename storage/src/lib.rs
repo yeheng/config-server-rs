@@ -1,11 +1,9 @@
-use async_trait::async_trait;
 use common::{ConfigContent, ConfigMeta, Result};
 use core::{ConfigFilter, ConfigVersion};
 use serde::{Deserialize, Serialize};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
 /// Storage trait for configuration data
-#[async_trait]
 pub trait ConfigStorage: Send + Sync {
     /// Get configuration by ID
     async fn get_config(&self, id: &str) -> Result<(ConfigMeta, ConfigContent)>;
@@ -40,7 +38,6 @@ pub trait ConfigStorage: Send + Sync {
 }
 
 /// Cache trait for configuration data
-#[async_trait]
 pub trait ConfigCache: Send + Sync {
     /// Get configuration from cache
     async fn get_config(&self, id: &str) -> Result<Option<(ConfigMeta, ConfigContent)>>;

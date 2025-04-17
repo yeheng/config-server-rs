@@ -24,8 +24,10 @@ tracing.workspace = true
 # Monitoring
 prometheus.workspace = true
 
+actix-web.workspace = true
+
 # Database
 sqlx.workspace = true
 
 [dev-dependencies]
-mockall.workspace = true 
+mockall.workspace = true
