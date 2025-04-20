@@ -1,9 +1,11 @@
-use common::{ConfigContent, ConfigMeta, Result};
-use core::{ConfigFilter, ConfigVersion};
+use async_trait::async_trait;
+use config_common::{ConfigContent, ConfigMeta, Result};
+use config_core::{ConfigFilter, ConfigVersion};
 use serde::{Deserialize, Serialize};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
 /// Storage trait for configuration data
+#[async_trait]
 pub trait ConfigStorage: Send + Sync {
     /// Get configuration by ID
     async fn get_config(&self, id: &str) -> Result<(ConfigMeta, ConfigContent)>;
@@ -38,6 +40,7 @@ pub trait ConfigStorage: Send + Sync {
 }
 
 /// Cache trait for configuration data
+#[async_trait]
 pub trait ConfigCache: Send + Sync {
     /// Get configuration from cache
     async fn get_config(&self, id: &str) -> Result<Option<(ConfigMeta, ConfigContent)>>;
@@ -75,7 +78,7 @@ impl DatabaseConfig {
             .max_connections(self.max_connections)
             .connect(&connection_string)
             .await
-            .map_err(|e| common::Error::Database(e.to_string()))?;
+            .map_err(|e| config_common::Error::Database(e.to_string()))?;
 
         Ok(pool)
     }
@@ -102,6 +105,6 @@ impl CacheConfig {
             None => format!("redis://{}:{}/{}", self.host, self.port, self.db),
         };
 
-        redis::Client::open(url).map_err(|e| common::Error::Cache(e.to_string()))
+        redis::Client::open(url).map_err(|e| config_common::Error::Cache(e.to_string()))
     }
 }

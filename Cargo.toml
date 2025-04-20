@@ -1,12 +1,12 @@
 [workspace]
 members = [
-    "common",
-    "core",
-    "raft",
-    "storage",
-    "api",
-    "audit",
-    "proto",
+    "config_common",
+    "config_core",
+    "config_raft",
+    "config_storage",
+    "config_api",
+    "config_audit",
+    "config_proto",
 ]
 resolver = "3"
 
@@ -19,7 +19,7 @@ license = "MIT"
 [workspace.dependencies]
 # Async runtime
 tokio = { version = "1", features = ["full"] }
-async-trait = "0.1"
+async-trait = { version = "0.1" }
 
 # Web framework
 actix-web = "4.5"
@@ -45,7 +45,7 @@ jsonwebtoken = "9.2"
 # Logging & monitoring
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-prometheus = "0.13"
+prometheus = "0.14"
 
 # Configuration
 config = "0.15"

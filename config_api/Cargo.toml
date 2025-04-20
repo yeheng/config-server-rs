@@ -1,5 +1,5 @@
 [package]
-name = "api"
+name = "config_api"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -7,8 +7,8 @@ license.workspace = true
 
 [dependencies]
 # Internal dependencies
-common = { path = "../common" }
-core = { path = "../core" }
+config_common = { path = "../config_common" }
+config_core = { path = "../config_core" }
 
 # Web framework
 actix-web.workspace = true

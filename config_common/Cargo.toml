@@ -1,16 +1,11 @@
 [package]
-name = "raft"
+name = "config_common"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
 
 [dependencies]
-# Internal dependencies
-common = { path = "../common" }
-core = { path = "../core" }
-storage = { path = "../storage" }
-
 # Async
 tokio.workspace = true
 async-trait.workspace = true
@@ -26,9 +21,13 @@ anyhow.workspace = true
 # Logging
 tracing.workspace = true
 
-# Raft
-raft = "0.7"
-protobuf = "3.2"
+# Monitoring
+prometheus.workspace = true
+
+actix-web.workspace = true
+
+# Database
+sqlx.workspace = true
 
 [dev-dependencies]
-mockall.workspace = true 
+mockall.workspace = true

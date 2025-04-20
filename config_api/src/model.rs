@@ -1,4 +1,4 @@
-use common::{ConfigContent, ConfigMeta};
+use config_common::{ConfigContent, ConfigMeta};
 use serde::{Deserialize, Serialize};
 
 /// REST API request and response types

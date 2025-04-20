@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use common::{AuditLog, Result};
+use config_common::{AuditLog, Result};
 use serde::{Deserialize, Serialize};
 use sqlx::{Execute, PgPool};
 use std::sync::Arc;
@@ -58,7 +58,7 @@ impl AuditService for DbAuditService {
         )
         .execute(&*self.pool)
         .await
-        .map_err(|e| common::Error::Database(e.to_string()))?;
+        .map_err(|e| config_common::Error::Database(e.to_string()))?;
 
         Ok(())
     }
@@ -105,7 +105,7 @@ impl AuditService for DbAuditService {
                 .bind_all(count_params)
                 .fetch_one(&*self.pool)
                 .await
-                .map_err(|e| common::Error::Database(e.to_string()))?
+                .map_err(|e| config_common::Error::Database(e.to_string()))?
                 .0 as i32;
 
         // 构造分页查询
@@ -119,7 +119,7 @@ impl AuditService for DbAuditService {
             .build_query_as::<AuditLog>()
             .fetch_all(&*self.pool)
             .await
-            .map_err(|e| common::Error::Database(e.to_string()))?;
+            .map_err(|e| config_common::Error::Database(e.to_string()))?;
 
         Ok((logs, total))
     }
@@ -145,7 +145,7 @@ pub async fn init_schema(pool: &PgPool) -> Result<()> {
     )
     .execute(pool)
     .await
-    .map_err(|e| common::Error::Database(e.to_string()))?;
+    .map_err(|e| config_common::Error::Database(e.to_string()))?;
 
     Ok(())
 }

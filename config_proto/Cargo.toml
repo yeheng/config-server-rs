@@ -1,5 +1,5 @@
 [package]
-name = "proto"
+name = "config_proto"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true

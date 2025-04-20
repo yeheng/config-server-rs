@@ -1,14 +1,14 @@
 use actix_web::{web, HttpResponse};
 
 use crate::model::*;
-use core::{ConfigFilter, ConfigManager};
+use config_core::{ConfigFilter, ConfigManager};
 
 /// REST API handlers
 
 pub async fn get_config(
     id: web::Path<String>,
     config_manager: web::Data<dyn ConfigManager>,
-) -> common::Result<HttpResponse> {
+) -> config_common::Result<HttpResponse> {
     let (meta, content) = config_manager.get_config(&id).await?;
     Ok(HttpResponse::Ok().json((meta, content)))
 }
@@ -17,7 +17,7 @@ pub async fn create_config(
     req: web::Json<CreateConfigRequest>,
     user: String,
     config_manager: web::Data<dyn ConfigManager>,
-) -> common::Result<HttpResponse> {
+) -> config_common::Result<HttpResponse> {
     let meta = config_manager
         .create_config(
             &req.name,
@@ -38,7 +38,7 @@ pub async fn update_config(
     req: web::Json<UpdateConfigRequest>,
     user: String,
     config_manager: web::Data<dyn ConfigManager>,
-) -> common::Result<HttpResponse> {
+) -> config_common::Result<HttpResponse> {
     let meta = config_manager
         .update_config(&id, req.description.as_deref(), req.content.clone(), &user)
         .await?;
@@ -48,7 +48,7 @@ pub async fn update_config(
 pub async fn delete_config(
     id: web::Path<String>,
     config_manager: web::Data<dyn ConfigManager>,
-) -> common::Result<HttpResponse> {
+) -> config_common::Result<HttpResponse> {
     config_manager.delete_config(&id).await?;
     Ok(HttpResponse::NoContent().finish())
 }
@@ -56,7 +56,7 @@ pub async fn delete_config(
 pub async fn list_configs(
     req: web::Query<ListConfigsRequest>,
     config_manager: web::Data<dyn ConfigManager>,
-) -> common::Result<HttpResponse> {
+) -> config_common::Result<HttpResponse> {
     let filter = ConfigFilter {
         namespace: req.namespace.clone(),
         department: req.department.clone(),

@@ -1,5 +1,5 @@
 [package]
-name = "audit"
+name = "config_core"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -7,15 +7,11 @@ license.workspace = true
 
 [dependencies]
 # Internal dependencies
-common = { path = "../common" }
-storage = { path = "../storage" }
+config_common = { path = "../config_common" }
 
 # Async
 tokio.workspace = true
 async-trait.workspace = true
-
-# Database
-sqlx.workspace = true
 
 # Serialization
 serde.workspace = true

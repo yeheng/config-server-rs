@@ -1,5 +1,5 @@
 [package]
-name = "storage"
+name = "raft"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -7,18 +7,12 @@ license.workspace = true
 
 [dependencies]
 # Internal dependencies
-common = { path = "../common" }
-core = { path = "../core" }
-
+config_common = { path = "../config_common" }
+config_core = { path = "../config_core" }
+config_storage = { path = "../config_storage" }
 # Async
 tokio.workspace = true
-async-trait = "0.1.74"
-
-# Database
-sqlx.workspace = true
-
-# Cache
-redis.workspace = true
+async-trait.workspace = true
 
 # Serialization
 serde.workspace = true
@@ -31,5 +25,9 @@ anyhow.workspace = true
 # Logging
 tracing.workspace = true
 
+# Raft
+raft = "0.7"
+protobuf = "3.2"
+
 [dev-dependencies]
-mockall.workspace = true
+mockall.workspace = true 

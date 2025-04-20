@@ -2,7 +2,7 @@ mod handlers;
 pub mod model;
 
 use actix_web::web;
-use core::ConfigManager;
+use config_core::ConfigManager;
 use std::sync::Arc;
 
 pub use crate::model::CreateConfigRequest;
